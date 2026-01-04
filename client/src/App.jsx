@@ -17,8 +17,10 @@ function App() {
   const [translating, setTranslating] = useState(false)
 
   useEffect(() => {
+    const API_URL = import.meta.env.VITE_API_URL || '';
+
     // Fetch models
-    fetch('/api/models')
+    fetch(`${API_URL}/api/models`)
       .then(res => res.json())
       .then(data => {
         setModels(data)
@@ -29,7 +31,7 @@ function App() {
       .catch(err => console.error('Failed to fetch models:', err))
 
     // Fetch default rules
-    fetch('/api/rules')
+    fetch(`${API_URL}/api/rules`)
       .then(res => res.json())
       .then(data => {
         if (data.rules) {
@@ -64,7 +66,8 @@ function App() {
     formData.append('model', selectedModel)
 
     try {
-      const response = await fetch('/api/summarize', {
+      const API_URL = import.meta.env.VITE_API_URL || '';
+      const response = await fetch(`${API_URL}/api/summarize`, {
         method: 'POST',
         body: formData,
       })
@@ -95,8 +98,9 @@ function App() {
 
     setTranslating(true);
     try {
+      const API_URL = import.meta.env.VITE_API_URL || '';
       // Translate Transcript
-      const transcriptRes = await fetch('/api/translate', {
+      const transcriptRes = await fetch(`${API_URL}/api/translate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -108,7 +112,7 @@ function App() {
       const transcriptData = await transcriptRes.json();
 
       // Translate Summary
-      const summaryRes = await fetch('/api/translate', {
+      const summaryRes = await fetch(`${API_URL}/api/translate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

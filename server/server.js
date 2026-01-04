@@ -9,13 +9,18 @@ const path = require('path');
 require('dotenv').config();
 
 const app = express();
-const port = 3000;
+const app = express();
+const port = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
 
 // Configure Multer for file uploads
-const upload = multer({ dest: 'uploads/' });
+const uploadDir = 'uploads/';
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir);
+}
+const upload = multer({ dest: uploadDir });
 
 // Read default rules
 app.get('/api/rules', (req, res) => {
