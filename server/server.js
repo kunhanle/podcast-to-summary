@@ -23,7 +23,7 @@ const upload = multer({ dest: uploadDir });
 
 // Read default rules
 app.get('/api/rules', (req, res) => {
-    const rulesPath = path.join(__dirname, '../rules.txt');
+    const rulesPath = path.join(__dirname, 'rules.txt');
     fs.readFile(rulesPath, 'utf8', (err, data) => {
         if (err) {
             console.error("Error reading rules.txt:", err);
@@ -51,6 +51,10 @@ const fileManager = new GoogleAIFileManager(apiKey);
 
 app.get('/api/models', async (req, res) => {
     try {
+        if (!apiKey) {
+            console.error("API Key is missing in /api/models");
+            return res.status(500).json({ error: "API Key is missing on server" });
+        }
         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
         if (!response.ok) {
             throw new Error(`Failed to list models: ${response.statusText}`);
