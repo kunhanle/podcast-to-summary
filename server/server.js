@@ -13,6 +13,8 @@ const port = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Configure Multer for file uploads
 const uploadDir = 'uploads/';
@@ -223,6 +225,12 @@ app.post('/api/translate', async (req, res) => {
         console.error("Error translation:", error);
         res.status(500).json({ error: error.message });
     }
+});
+
+// The "catchall" handler: for any request that doesn't
+// match one above, send back React's index.html file.
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.listen(port, () => {
